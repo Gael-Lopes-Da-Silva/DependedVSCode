@@ -1,0 +1,85 @@
+{
+    "activationEvents": [
+        "onFileSystem:package.json",
+        "onFileSystem:Cargo.toml",
+        "onDidChangeConfiguration",
+        "onStartupFinished"
+    ],
+    "bugs": "https://github.com/Gael-Lopes-Da-Silva/DependedVSCode/issues/new/choose",
+    "categories": [
+        "Other"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "category": "Depended",
+                "command": "depended.toggleDislay",
+                "title": "Toggle Display"
+            },
+            {
+                "category": "Depended",
+                "command": "depended.updateVersionCache",
+                "title": "Update Version Cache"
+            }
+        ],
+        "configuration": {
+            "properties": {
+                "depended.display": {
+                    "default": true,
+                    "description": "Turn on or off dependencies icons.",
+                    "type": "boolean"
+                },
+                "depended.invalidIcon": {
+                    "default": "⚠️",
+                    "description": "Icon used when invalid or unkown dependency version used.",
+                    "type": "string"
+                },
+                "depended.normalIcon": {
+                    "default": "✅",
+                    "description": "Icon used when the latest dependency is used.",
+                    "type": "string"
+                },
+                "depended.updateIcon": {
+                    "default": "⬆️",
+                    "description": "Icon when an update is available for the dependency.",
+                    "type": "string"
+                }
+            },
+            "title": "Depended Configuration",
+            "type": "object"
+        }
+    },
+    "dependencies": {
+        "toml": "^3.0.0"
+    },
+    "description": "",
+    "devDependencies": {
+        "@vscode/vsce": "^3.2.1"
+    },
+    "displayName": "Depended",
+    "engines": {
+        "vscode": "^1.84.0"
+    },
+    "galleryBanner": {
+        "color": "#ffd900",
+        "theme": "dark"
+    },
+    "icon": "resources/logo.png",
+    "keywords": [
+        "depended"
+    ],
+    "license": "LICENSE.md",
+    "main": "src/extension.js",
+    "markdown": "github",
+    "name": "depended",
+    "publisher": "gael-lopes-da-silva",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Gael-Lopes-Da-Silva/DependedVSCode"
+    },
+    "scripts": {
+        "package": "vsce package -o build",
+        "publish": "vsce publish"
+    },
+    "version": "0.0.1"
+}
