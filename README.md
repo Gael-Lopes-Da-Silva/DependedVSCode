@@ -46,8 +46,8 @@ Depended has 2 command available right now. `Colored: Toggle Display` that turn 
 
 ~~~json
 {
-	"depended.display": true, // Turn on or off dependencies icons
-	"depended.normalIcon": "✅", // Icon used when the latest dependency is used
+    "depended.display": true, // Turn on or off dependencies icons
+    "depended.normalIcon": "✅", // Icon used when the latest dependency is used
     "depended.updateIcon": "⬆️", // Icon when an update is available for the dependency
     "depended.invalidIcon": "⚠️", // Icon used when invalid or unkown dependency version used
 }
