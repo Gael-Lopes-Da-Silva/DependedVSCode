@@ -49,12 +49,10 @@
             "type": "object"
         }
     },
-    "dependencies": {
-        "toml": "^3.0.0"
-    },
     "description": "",
     "devDependencies": {
-        "@vscode/vsce": "^3.2.1"
+        "@vscode/vsce": "^3.2.1",
+        "toml": "^3.0.0"
     },
     "displayName": "Depended",
     "engines": {
@@ -81,5 +79,5 @@
         "package": "vsce package -o build",
         "publish": "vsce publish"
     },
-    "version": "0.0.1"
+    "version": "0.0.2"
 }
