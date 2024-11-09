@@ -1,6 +1,11 @@
-.github/
-.gitignore
-.vscode/
-build/
-node_modules/
-package-lock.json
+*
+*/**
+
+!node_modules/toml
+!resources/*
+!screenshots/*
+!src/extension.js
+!CHANGELOG.md
+!LICENSE.md
+!package.json
+!README.md

@@ -5,6 +5,11 @@
         "onDidChangeConfiguration",
         "onStartupFinished"
     ],
+    "author": {
+        "email": "gael.lopes-da-silva@outlook.fr",
+        "name": "Gaël Lopes Da Silva",
+        "url": "https://github.com/Gael-Lopes-Da-Silva"
+    },
     "bugs": "https://github.com/Gael-Lopes-Da-Silva/DependedVSCode/issues/new/choose",
     "categories": [
         "Other"
@@ -49,10 +54,12 @@
             "type": "object"
         }
     },
-    "description": "",
-    "devDependencies": {
-        "@vscode/vsce": "^3.2.1",
+    "dependencies": {
         "toml": "^3.0.0"
+    },
+    "description": "Check dependencies versions and display them",
+    "devDependencies": {
+        "@vscode/vsce": "^3.2.1"
     },
     "displayName": "Depended",
     "engines": {
@@ -64,6 +71,11 @@
     },
     "icon": "resources/logo.png",
     "keywords": [
+        "denpendencies",
+        "node",
+        "javascript",
+        "js",
+        "rust",
         "depended"
     ],
     "license": "LICENSE.md",
@@ -79,5 +91,5 @@
         "package": "vsce package -o build",
         "publish": "vsce publish"
     },
-    "version": "0.0.2"
+    "version": "0.0.3"
 }
