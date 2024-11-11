@@ -1,0 +1,11 @@
+- [ ] Fix Rust deps support (for version using only major number)
+- [ ] Split cache for each language supported (no name conflict)
+- [ ] Add support for PHP > composer.json
+- [ ] Add support for Zig > build.zig.zon
+- [ ] Add support for Python > requirements.txt
+- [ ] Add support for Haxe > haxelib.json
+- [ ] Add support for Nim > .nimble files
+- [ ] Add support for Dart > .yaml files
+- [ ] Add support for Swift > Package.swift
+
+- No support for Go > main extension already do that
