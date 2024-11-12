@@ -48,6 +48,11 @@
                     "default": "⬆️",
                     "description": "Icon when an update is available for the dependency.",
                     "type": "string"
+                },
+                "depended.problemIcon": {
+                    "default": "❌",
+                    "description": "Icon when a dependency was not found.",
+                    "type": "string"
                 }
             },
             "title": "Depended Configuration",

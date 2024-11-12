@@ -11,18 +11,22 @@ const handlers = {
     "Cargo.toml": checkRustDependencies
 }
 
+const versionCache = [
+    new Map(), // Javascript
+    new Map() // Rust
+];
+
 const decorationType = vscode.window.createTextEditorDecorationType({
     after: {
         margin: '0 0 0 1em',
     }
 });
 
-const versionCache = new Map();
-
 let display = true;
 let normalIcon = "✅";
 let updateIcon = "⬆️";
 let invalidIcon = "⚠️";
+let problemIcon = "❌";
 
 // ----------------------------------------------------
 
@@ -53,6 +57,7 @@ function loadConfiguration() {
     normalIcon = config.inspect('normalIcon').globalValue || config.get('normalIcon');
     updateIcon = config.inspect('updateIcon').globalValue || config.get('updateIcon');
     invalidIcon = config.inspect('invalidIcon').globalValue || config.get('invalidIcon');
+    problemIcon = config.inspect('problemIcon').globalValue || config.get('problemIcon');
 }
 
 function onDidChangeActiveTextEditor() {
@@ -95,7 +100,7 @@ function toggleDislay() {
 }
 
 function updateVersionCache() {
-    versionCache.clear();
+    versionCache.forEach((cache) => cache.clear());
 
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor) return;
@@ -154,12 +159,29 @@ async function checkJSDependencies(document) {
         }
     }
 
+    const processDependencyError = (dependency, currentVersion) => {
+        const regex = new RegExp(`"${dependency}"\\s*:\\s*"[\\^~]?${currentVersion}"(?:\\s*,)?`);
+        const match = regex.exec(text);
+
+        if (match) {
+            const startPos = document.positionAt(match.index);
+            const endPos = document.positionAt(match.index + match[0].length);
+            const decoration = {
+                range: new vscode.Range(startPos, endPos),
+                renderOptions: {
+                    after: { contentText: problemIcon }
+                }
+            };
+            decorations.push(decoration);
+        }
+    }
+
     const dependencyChecks = Object.keys(dependencies).map(dependency => {
         return new Promise((resolve) => {
             const currentVersion = dependencies[dependency].replace(/[\^~]/, "");
 
-            if (versionCache.has(dependency)) {
-                const { latestVersion, versions } = versionCache.get(dependency);
+            if (versionCache[0].has(dependency)) {
+                const { latestVersion, versions } = versionCache[0].get(dependency);
 
                 processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);
                 return resolve();
@@ -180,15 +202,17 @@ async function checkJSDependencies(document) {
                         const versions = parsedData.versions;
                         const latestVersion = Object.keys(versions).pop();
 
-                        versionCache.set(dependency, { latestVersion, versions });
+                        versionCache[0].set(dependency, { latestVersion, versions });
                         processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);
 
                         resolve();
                     } catch (error) {
+                        processDependencyError(dependency, currentVersion);
                         resolve();
                     }
                 });
             }).on('error', () => {
+                processDependencyError(dependency, currentVersion);
                 resolve();
             });
         });
@@ -222,8 +246,8 @@ async function checkRustDependencies(document) {
     };
 
     const processDependencyData = (dependency, currentVersion, latestVersion, versions, text, document, decorations) => {
-        const validVersion = versions.some(version => version.num === currentVersion);
-        const upToDate = currentVersion === latestVersion;
+        const validVersion = versions.some(version => version.num.startsWith(currentVersion));
+        const upToDate = currentVersion === latestVersion || latestVersion.startsWith(currentVersion);
         const statusText = getDecorationText(validVersion, upToDate, latestVersion);
 
         const regex = new RegExp(`${dependency}\\s*=\\s*(?:"[\\^~]?${currentVersion}"|{[^}]*version\\s*=\\s*"[\\^~]?${currentVersion}"[^}]*})`);
@@ -242,12 +266,29 @@ async function checkRustDependencies(document) {
         }
     }
 
+    const processDependencyError = (dependency, currentVersion) => {
+        const regex = new RegExp(`${dependency}\\s*=\\s*(?:"[\\^~]?${currentVersion}"|{[^}]*version\\s*=\\s*"[\\^~]?${currentVersion}"[^}]*})`);
+        const match = regex.exec(text);
+
+        if (match) {
+            const startPos = document.positionAt(match.index);
+            const endPos = document.positionAt(match.index + match[0].length);
+            const decoration = {
+                range: new vscode.Range(startPos, endPos),
+                renderOptions: {
+                    after: { contentText: problemIcon }
+                }
+            };
+            decorations.push(decoration);
+        }
+    }
+
     const dependencyChecks = Object.keys(dependencies).map(dependency => {
         return new Promise((resolve) => {
             const currentVersion = (dependencies[dependency]['version'] || dependencies[dependency]).replace(/[\^~]/, "");
 
-            if (versionCache.has(dependency)) {
-                const { latestVersion, versions } = versionCache.get(dependency);
+            if (versionCache[1].has(dependency)) {
+                const { latestVersion, versions } = versionCache[1].get(dependency);
 
                 processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);
                 return resolve();
@@ -274,15 +315,17 @@ async function checkRustDependencies(document) {
                         const versions = parsedData.versions;
                         const latestVersion = parsedData.crate.newest_version;
 
-                        versionCache.set(dependency, { latestVersion, versions });
+                        versionCache[1].set(dependency, { latestVersion, versions });
                         processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);
 
                         resolve();
                     } catch (error) {
+                        processDependencyError(dependency, currentVersion);
                         resolve();
                     }
                 });
             }).on('error', () => {
+                processDependencyError(dependency, currentVersion);
                 resolve();
             });
         });

@@ -38,6 +38,9 @@ Right now we support the following languages.
 - Javascript (npm)
 - Rust (crates.io)
 
+Languages that can be but will not be supported.
+- Go (the [Go](https://marketplace.visualstudio.com/items?itemName=golang.Go) does pretty much what my extension does)
+
 
 Options
 ------------------------------------------------------------------
