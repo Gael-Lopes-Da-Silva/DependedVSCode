@@ -65,7 +65,7 @@ function loadConfiguration() {
     displayJavascript = config.inspect('javascript.display').globalValue || config.get('javascript.display');
     displayRust = config.inspect('rust.display').globalValue || config.get('rust.display');
     displayPhp = config.inspect('php.display').globalValue || config.get('php.display');
-    displayPython = config.inspect('python.display').globalValue || config.get('pythondisplay');
+    displayPython = config.inspect('python.display').globalValue || config.get('python.display');
     normalIcon = config.inspect('normalIcon').globalValue || config.get('normalIcon');
     updateIcon = config.inspect('updateIcon').globalValue || config.get('updateIcon');
     invalidIcon = config.inspect('invalidIcon').globalValue || config.get('invalidIcon');

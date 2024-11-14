@@ -8,6 +8,9 @@
 
 ---
 
+### 0.0.5
+- Fix bug in Python dependencies check
+
 ### 0.0.4
 - Fix Rust dependencies major version not detected correctly
 - Added support for Php and Python dependencies check
