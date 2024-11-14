@@ -8,6 +8,11 @@
 
 ---
 
+### 0.0.4
+- Fix Rust dependencies major version not detected correctly
+- Added support for Php and Python dependencies check
+- Added options to hide icons for each languages supported
+
 ### 0.0.2 - 0.0.3
 - Fix toml dependency issue
 

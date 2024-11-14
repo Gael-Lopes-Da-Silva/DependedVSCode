@@ -27,6 +27,10 @@ const decorationType = vscode.window.createTextEditorDecorationType({
 });
 
 let display = true;
+let displayJavascript = true;
+let displayRust = true;
+let displayPhp = true;
+let displayPython = true;
 let normalIcon = "✅";
 let updateIcon = "⬆️";
 let invalidIcon = "⚠️";
@@ -58,6 +62,10 @@ function loadConfiguration() {
     const config = vscode.workspace.getConfiguration('depended');
 
     display = config.inspect('display').globalValue || config.get('display');
+    displayJavascript = config.inspect('javascript.display').globalValue || config.get('javascript.display');
+    displayRust = config.inspect('rust.display').globalValue || config.get('rust.display');
+    displayPhp = config.inspect('php.display').globalValue || config.get('php.display');
+    displayPython = config.inspect('python.display').globalValue || config.get('pythondisplay');
     normalIcon = config.inspect('normalIcon').globalValue || config.get('normalIcon');
     updateIcon = config.inspect('updateIcon').globalValue || config.get('updateIcon');
     invalidIcon = config.inspect('invalidIcon').globalValue || config.get('invalidIcon');
@@ -100,7 +108,7 @@ function toggleDislay() {
         clearAllDecorations();
     }
 
-    vscode.window.showInformationMessage(`Dependencies icons is now ${display ? 'on' : 'off'}.`);
+    vscode.window.showInformationMessage(`Dependencies icons are now ${display ? 'on' : 'off'}.`);
 }
 
 function updateVersionCache() {
@@ -119,6 +127,8 @@ function getDecorationText(validVersion, upToDate, latestVersion) {
 
 async function checkJSDependencies(document) {
     if (!display) return;
+
+    if (!displayJavascript) return;
 
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor || activeTextEditor.document !== document) return;
@@ -230,6 +240,8 @@ async function checkJSDependencies(document) {
 
 async function checkRustDependencies(document) {
     if (!display) return;
+
+    if (!displayRust) return;
 
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor || activeTextEditor.document !== document) return;
@@ -346,6 +358,8 @@ async function checkRustDependencies(document) {
 async function checkPhpDependencies(document) {
     if (!display) return;
 
+    if (!displayPhp) return;
+
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor || activeTextEditor.document !== document) return;
 
@@ -457,6 +471,8 @@ async function checkPhpDependencies(document) {
 
 async function checkPythonDependencies(document) {
     if (!display) return;
+
+    if (!displayPython) return;
 
     const activeTextEditor = vscode.window.activeTextEditor;
     if (!activeTextEditor || activeTextEditor.document !== document) return;

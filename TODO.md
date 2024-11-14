@@ -1,7 +1,3 @@
-- [x] Fix Rust deps support (for version using only major number)
-- [x] Split cache for each language supported (no name conflict)
-- [x] Add support for PHP > composer.json
-- [x] Add support for Python > requirements.txt
 - [ ] Add support for Dart > .yaml files
 - [ ] Add support for Zig > build.zig.zon
 - [ ] Add support for Nim > .nimble files

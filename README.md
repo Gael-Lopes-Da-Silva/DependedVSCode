@@ -48,11 +48,15 @@ Depended has 2 command available right now. `Colored: Toggle Display` that turn 
 
 ~~~json
 {
-    "depended.display": true, // Turn on or off dependencies icons
+    "depended.display": true, // Turn on or off dependencies icons of all languages
     "depended.normalIcon": "✅", // Icon used when the latest dependency is used
     "depended.updateIcon": "⬆️", // Icon when an update is available for the dependency
     "depended.invalidIcon": "⚠️", // Icon used when invalid or unkown dependency version used
     "depended.problemIcon": "❌", // Icon when a dependency was not found
+    "depended.javascript.display": true, // Turn on or off dependencies icons for javascript
+    "depended.rust.display": true, // Turn on or off dependencies icons for rust
+    "depended.php.display": true, // Turn on or off dependencies icons for php
+    "depended.python.display": true, // Turn on or off dependencies icons for python
 }
 ~~~
 

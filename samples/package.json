@@ -2,11 +2,6 @@
     "name": "railroad",
     "version": "1.0.0",
     "main": "server.js",
-    "scripts": {
-        "start": "nodemon server.js",
-        "pack": "npm-pack-zip",
-        "test": "mocha ./tests/*.js --exit"
-    },
     "type": "module",
     "dependencies": {
         "bcrypt": "^5.1.1",

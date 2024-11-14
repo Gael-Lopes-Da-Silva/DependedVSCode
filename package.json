@@ -31,7 +31,7 @@
             "properties": {
                 "depended.display": {
                     "default": true,
-                    "description": "Turn on or off dependencies icons.",
+                    "description": "Turn on or off dependencies icons of all languages.",
                     "type": "boolean"
                 },
                 "depended.invalidIcon": {
@@ -39,19 +39,39 @@
                     "description": "Icon used when invalid or unkown dependency version used.",
                     "type": "string"
                 },
+                "depended.javascript.display": {
+                    "default": true,
+                    "description": "Turn on or off dependencies icons for javascript.",
+                    "type": "boolean"
+                },
                 "depended.normalIcon": {
                     "default": "✅",
                     "description": "Icon used when the latest dependency is used.",
                     "type": "string"
                 },
-                "depended.updateIcon": {
-                    "default": "⬆️",
-                    "description": "Icon when an update is available for the dependency.",
-                    "type": "string"
+                "depended.php.display": {
+                    "default": true,
+                    "description": "Turn on or off dependencies icons for php.",
+                    "type": "boolean"
                 },
                 "depended.problemIcon": {
                     "default": "❌",
                     "description": "Icon when a dependency was not found.",
+                    "type": "string"
+                },
+                "depended.python.display": {
+                    "default": true,
+                    "description": "Turn on or off dependencies icons for python.",
+                    "type": "boolean"
+                },
+                "depended.rust.display": {
+                    "default": true,
+                    "description": "Turn on or off dependencies icons for rust.",
+                    "type": "boolean"
+                },
+                "depended.updateIcon": {
+                    "default": "⬆️",
+                    "description": "Icon when an update is available for the dependency.",
                     "type": "string"
                 }
             },
@@ -77,10 +97,18 @@
     "icon": "resources/logo.png",
     "keywords": [
         "denpendencies",
+        "deps",
         "node",
         "javascript",
         "js",
+        "npm",
         "rust",
+        "cargo",
+        "php",
+        "composer",
+        "packegist",
+        "python",
+        "pypi",
         "depended"
     ],
     "license": "LICENSE.md",
@@ -96,5 +124,5 @@
         "package": "vsce package -o build",
         "publish": "vsce publish"
     },
-    "version": "0.0.3"
+    "version": "0.0.4"
 }
