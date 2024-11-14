@@ -37,9 +37,8 @@ Supported languages
 Right now we support the following languages.
 - Javascript (npm)
 - Rust (crates.io)
-
-Languages that can be but will not be supported.
-- Go (the [Go](https://marketplace.visualstudio.com/items?itemName=golang.Go) does pretty much what my extension does)
+- Php (packagist)
+- Python (pypi)
 
 
 Options
@@ -53,6 +52,7 @@ Depended has 2 command available right now. `Colored: Toggle Display` that turn 
     "depended.normalIcon": "✅", // Icon used when the latest dependency is used
     "depended.updateIcon": "⬆️", // Icon when an update is available for the dependency
     "depended.invalidIcon": "⚠️", // Icon used when invalid or unkown dependency version used
+    "depended.problemIcon": "❌", // Icon when a dependency was not found
 }
 ~~~
 
