@@ -8,6 +8,9 @@
 
 ---
 
+### 0.0.6
+- Added options to only show latest stable version for each languages supported
+
 ### 0.0.5
 - Fix bug in Python dependencies check
 

@@ -31,6 +31,10 @@ let displayJavascript = true;
 let displayRust = true;
 let displayPhp = true;
 let displayPython = true;
+let javascriptStable = false;
+let rustStable = false;
+let phpStable = false;
+let pythonStable = false;
 let normalIcon = "✅";
 let updateIcon = "⬆️";
 let invalidIcon = "⚠️";
@@ -66,6 +70,10 @@ function loadConfiguration() {
     displayRust = config.inspect('rust.display').globalValue || config.get('rust.display');
     displayPhp = config.inspect('php.display').globalValue || config.get('php.display');
     displayPython = config.inspect('python.display').globalValue || config.get('python.display');
+    javascriptStable = config.inspect('javascript.stable').globalValue || config.get('javascript.stable');
+    rustStable = config.inspect('rust.stable').globalValue || config.get('rust.stable');
+    phpStable = config.inspect('php.stable').globalValue || config.get('php.stable');
+    pythonStable = config.inspect('python.stable').globalValue || config.get('python.stable');
     normalIcon = config.inspect('normalIcon').globalValue || config.get('normalIcon');
     updateIcon = config.inspect('updateIcon').globalValue || config.get('updateIcon');
     invalidIcon = config.inspect('invalidIcon').globalValue || config.get('invalidIcon');
@@ -216,7 +224,17 @@ async function checkJSDependencies(document) {
                     try {
                         const parsedData = JSON.parse(data);
                         const versions = parsedData.versions;
-                        const latestVersion = Object.keys(versions).pop();
+
+                        let latestVersion = "";
+                        if (javascriptStable) {
+                            const stableVersions = Object.keys(versions).filter(version => {
+                                return !/(?:alpha|beta|rc|dev|post|preview|snapshot|canary)/i.test(version);
+                            });
+
+                            latestVersion = stableVersions.pop() || Object.keys(versions).pop();
+                        } else {
+                            latestVersion = Object.keys(versions).pop();
+                        }
 
                         versionCache[0].set(dependency, { latestVersion, versions });
                         processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);
@@ -333,7 +351,17 @@ async function checkRustDependencies(document) {
                     try {
                         const parsedData = JSON.parse(data);
                         const versions = parsedData.versions;
-                        const latestVersion = parsedData.crate.newest_version;
+
+                        let latestVersion = "";
+                        if (rustStable) {
+                            const stableVersions = versions.filter(version => {
+                                return !/(?:alpha|beta|rc|dev|post|preview|snapshot|canary)/i.test(version.num);
+                            });
+
+                            latestVersion = stableVersions[0].num || parsedData.crate.newest_version;
+                        } else {
+                            latestVersion = parsedData.crate.newest_version;
+                        }
 
                         versionCache[1].set(dependency, { latestVersion, versions });
                         processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);
@@ -447,7 +475,17 @@ async function checkPhpDependencies(document) {
                     try {
                         const parsedData = JSON.parse(data);
                         const versions = parsedData.packages[dependency].map(pkg => pkg.version);
-                        const latestVersion = versions[0];
+
+                        let latestVersion = "";
+                        if (phpStable) {
+                            const stableVersions = versions.filter(version => {
+                                return !/(?:alpha|beta|rc|dev|post|preview|snapshot|canary)/i.test(version);
+                            });
+
+                            latestVersion = stableVersions[0] || versions[0];
+                        } else {
+                            latestVersion = versions[0];
+                        }
 
                         versionCache[2].set(dependency, { latestVersion, versions });
                         processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);
@@ -486,7 +524,7 @@ async function checkPythonDependencies(document) {
     lines.forEach(line => {
         const match = line.match(/([\w\-]+)(?:==|>=|<=|~=|<)([\d.]+)/);
         if (match) {
-            const [ , name, version ] = match;
+            const [, name, version] = match;
             dependencies[name] = version;
         }
     });
@@ -555,7 +593,29 @@ async function checkPythonDependencies(document) {
                     try {
                         const parsedData = JSON.parse(data);
                         const versions = parsedData.releases;
-                        const latestVersion = Object.keys(versions).pop();
+
+                        let latestVersion = "";
+                        if (pythonStable) {
+                            const stableVersions = Object.keys(versions).filter(version => {
+                                return !/(?:alpha|beta|rc|dev|post|preview|snapshot|canary)/i.test(version);
+                            });
+
+                            const sortedVersions = stableVersions.sort((a, b) => {
+                                const parseVersion = version => version.split('.').map(num => parseInt(num.replace(/\D/g, ''), 10) || 0);
+                                const [aParts, bParts] = [parseVersion(a), parseVersion(b)];
+
+                                for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+                                    const diff = (bParts[i] || 0) - (aParts[i] || 0);
+                                    if (diff !== 0) return diff;
+                                }
+
+                                return 0;
+                            });
+
+                            latestVersion = sortedVersions[0] || Object.keys(versions).pop();
+                        } else {
+                            latestVersion = Object.keys(versions).pop();
+                        }
 
                         versionCache[3].set(dependency, { latestVersion, versions });
                         processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);

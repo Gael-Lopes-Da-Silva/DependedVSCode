@@ -44,6 +44,11 @@
                     "description": "Turn on or off dependencies icons for javascript.",
                     "type": "boolean"
                 },
+                "depended.javascript.stable": {
+                    "default": false,
+                    "description": "Only show stable version when fetch latest version for javascript.",
+                    "type": "boolean"
+                },
                 "depended.normalIcon": {
                     "default": "✅",
                     "description": "Icon used when the latest dependency is used.",
@@ -52,6 +57,11 @@
                 "depended.php.display": {
                     "default": true,
                     "description": "Turn on or off dependencies icons for php.",
+                    "type": "boolean"
+                },
+                "depended.php.stable": {
+                    "default": false,
+                    "description": "Only show stable version when fetch latest version for php.",
                     "type": "boolean"
                 },
                 "depended.problemIcon": {
@@ -64,9 +74,19 @@
                     "description": "Turn on or off dependencies icons for python.",
                     "type": "boolean"
                 },
+                "depended.python.stable": {
+                    "default": false,
+                    "description": "Only show stable version when fetch latest version for python.",
+                    "type": "boolean"
+                },
                 "depended.rust.display": {
                     "default": true,
                     "description": "Turn on or off dependencies icons for rust.",
+                    "type": "boolean"
+                },
+                "depended.rust.stable": {
+                    "default": false,
+                    "description": "Only show stable version when fetch latest version for rust.",
                     "type": "boolean"
                 },
                 "depended.updateIcon": {
@@ -124,5 +144,5 @@
         "package": "vsce package -o build",
         "publish": "vsce publish"
     },
-    "version": "0.0.5"
+    "version": "0.0.6"
 }

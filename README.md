@@ -57,6 +57,10 @@ Depended has 2 command available right now. `Colored: Toggle Display` that turn 
     "depended.rust.display": true, // Turn on or off dependencies icons for rust
     "depended.php.display": true, // Turn on or off dependencies icons for php
     "depended.python.display": true, // Turn on or off dependencies icons for python
+    "depended.javascript.stable": false, // Only show stable version when fetch latest version for javascript
+    "depended.rust.stable": false, // Only show stable version when fetch latest version for rust
+    "depended.php.stable": false, // Only show stable version when fetch latest version for php
+    "depended.python.stable": false, // Only show stable version when fetch latest version for python
 }
 ~~~
 
