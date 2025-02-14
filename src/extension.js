@@ -228,7 +228,7 @@ async function checkJSDependencies(document) {
                         let latestVersion = "";
                         if (javascriptStable) {
                             const stableVersions = Object.keys(versions).filter(version => {
-                                return !/(?:alpha|beta|rc|dev|post|preview|snapshot|canary)/i.test(version);
+                                return !/(?:alpha|beta|rc|dev|post|preview|snapshot|canary|insider|insiders|internal|development)/i.test(version);
                             });
 
                             latestVersion = stableVersions.pop() || Object.keys(versions).pop();

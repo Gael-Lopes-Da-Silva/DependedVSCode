@@ -8,6 +8,9 @@
 
 ---
 
+### 0.0.7
+- Fixed issue with javascript dependencies version check
+
 ### 0.0.6
 - Added options to only show latest stable version for each languages supported
 
