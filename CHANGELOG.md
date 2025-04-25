@@ -8,6 +8,9 @@
 
 ---
 
+### 0.0.8
+- Fixed issue with php dependencies version check on ranges
+
 ### 0.0.7
 - Fixed issue with javascript dependencies version check
 

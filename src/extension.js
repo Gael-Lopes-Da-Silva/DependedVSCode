@@ -5,6 +5,7 @@
 const vscode = require('vscode');
 const https = require('https');
 const toml = require('toml');
+const semver = require('semver');
 
 const handlers = {
     "package.json": checkJSDependencies,
@@ -385,7 +386,6 @@ async function checkRustDependencies(document) {
 
 async function checkPhpDependencies(document) {
     if (!display) return;
-
     if (!displayPhp) return;
 
     const activeTextEditor = vscode.window.activeTextEditor;
@@ -407,14 +407,57 @@ async function checkPhpDependencies(document) {
         ...composerJson['require-dev']
     };
 
-    const processDependencyData = (dependency, currentVersion, latestVersion, versions, text, document, decorations) => {
+    function parseVersionConstraint(constraint) {
+        const orGroups = constraint.split(/\s*\|\|\s*/).map(group => group.trim());
+        return orGroups.map(group => {
+            const conditions = group.split(/\s+/).filter(c => c);
+            return conditions.map(condition => {
+                const match = condition.match(/^([<>=!~^]*)(.*)$/);
+                if (!match) return null;
+                return { operator: match[1] || '=', version: match[2] };
+            }).filter(c => c);
+        });
+    }
+
+    function satisfiesConstraint(version, constraint) {
+        return parseVersionConstraint(constraint).some(orGroup => {
+            return orGroup.every(condition => {
+                const { operator, version: constraintVersion } = condition;
+                try {
+                    if (operator === '^') {
+                        return semver.satisfies(version, `^${constraintVersion}`);
+                    } else if (operator === '~') {
+                        return semver.satisfies(version, `~${constraintVersion}`);
+                    } else if (operator === '>=') {
+                        return semver.gte(version, constraintVersion);
+                    } else if (operator === '<=') {
+                        return semver.lte(version, constraintVersion);
+                    } else if (operator === '>') {
+                        return semver.gt(version, constraintVersion);
+                    } else if (operator === '<') {
+                        return semver.lt(version, constraintVersion);
+                    } else if (operator === '=') {
+                        return semver.eq(version, constraintVersion);
+                    } else if (operator === '!=') {
+                        return !semver.eq(version, constraintVersion);
+                    }
+                    return false;
+                } catch (e) {
+                    return false;
+                }
+            });
+        });
+    }
+
+    const processDependencyData = (dependency, versionConstraint, latestVersion, versions, text, document, decorations) => {
         latestVersion = latestVersion.replace(/v/, '');
 
-        const validVersion = versions.some(version => version.replace(/v/, '').startsWith(currentVersion));
-        const upToDate = currentVersion === latestVersion || latestVersion.startsWith(currentVersion);
-        const statusText = getDecorationText(validVersion, upToDate, latestVersion);
+        const latestSatisfies = satisfiesConstraint(latestVersion, versionConstraint);
+        const validVersion = versions.some(version => satisfiesConstraint(version.replace(/v/, ''), versionConstraint));
+        const statusText = getDecorationText(validVersion, latestSatisfies, latestVersion);
 
-        const regex = new RegExp(`"${dependency}"\\s*:\\s*"[\\^~]?${currentVersion}"(?:\\s*,)?`);
+        const escapedConstraint = versionConstraint.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        const regex = new RegExp(`"${dependency}"\\s*:\\s*"${escapedConstraint}"(?:\\s*,)?`);
         const match = regex.exec(text);
 
         if (match) {
@@ -428,10 +471,11 @@ async function checkPhpDependencies(document) {
             };
             decorations.push(decoration);
         }
-    }
+    };
 
-    const processDependencyError = (dependency, currentVersion) => {
-        const regex = new RegExp(`"${dependency}"\\s*:\\s*"[\\^~]?${currentVersion}"(?:\\s*,)?`);
+    const processDependencyError = (dependency, versionConstraint) => {
+        const escapedConstraint = versionConstraint.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        const regex = new RegExp(`"${dependency}"\\s*:\\s*"${escapedConstraint}"(?:\\s*,)?`);
         const match = regex.exec(text);
 
         if (match) {
@@ -445,20 +489,18 @@ async function checkPhpDependencies(document) {
             };
             decorations.push(decoration);
         }
-    }
+    };
 
     const dependencyChecks = Object.keys(dependencies).map(dependency => {
         return new Promise((resolve) => {
             if (dependency === "php" || dependency.startsWith("ext-")) return resolve();
 
-            const currentVersion = dependencies[dependency].replace(/[\^~]/, "");
-
-            if (currentVersion === "") return resolve();
+            const versionConstraint = dependencies[dependency];
+            if (!versionConstraint) return resolve();
 
             if (versionCache[2].has(dependency)) {
                 const { latestVersion, versions } = versionCache[2].get(dependency);
-
-                processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);
+                processDependencyData(dependency, versionConstraint, latestVersion, versions, text, document, decorations);
                 return resolve();
             }
 
@@ -481,23 +523,22 @@ async function checkPhpDependencies(document) {
                             const stableVersions = versions.filter(version => {
                                 return !/(?:alpha|beta|rc|dev|post|preview|snapshot|canary)/i.test(version);
                             });
-
                             latestVersion = stableVersions[0] || versions[0];
                         } else {
                             latestVersion = versions[0];
                         }
 
                         versionCache[2].set(dependency, { latestVersion, versions });
-                        processDependencyData(dependency, currentVersion, latestVersion, versions, text, document, decorations);
+                        processDependencyData(dependency, versionConstraint, latestVersion, versions, text, document, decorations);
 
                         resolve();
                     } catch (error) {
-                        processDependencyError(dependency, currentVersion);
+                        processDependencyError(dependency, versionConstraint);
                         resolve();
                     }
                 });
             }).on('error', () => {
-                processDependencyError(dependency, currentVersion);
+                processDependencyError(dependency, versionConstraint);
                 resolve();
             });
         });

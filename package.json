@@ -100,6 +100,7 @@
         }
     },
     "dependencies": {
+        "semver": "^7.7.1",
         "toml": "^3.0.0"
     },
     "description": "Check dependencies versions and display them",
@@ -144,5 +145,5 @@
         "package": "vsce package -o build",
         "publish": "vsce publish"
     },
-    "version": "0.0.7"
+    "version": "0.0.8"
 }
