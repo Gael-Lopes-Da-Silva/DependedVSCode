@@ -2,6 +2,7 @@
 */**
 
 !node_modules/toml
+!node_modules/semver
 !resources/*
 !screenshots/*
 !src/extension.js

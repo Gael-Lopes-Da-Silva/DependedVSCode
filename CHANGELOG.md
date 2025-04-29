@@ -8,7 +8,7 @@
 
 ---
 
-### 0.0.8
+### 0.0.8 - 0.0.9
 - Fixed issue with php dependencies version check on ranges
 
 ### 0.0.7
